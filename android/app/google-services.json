@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "603056598967",
+    "firebase_url": "https://hcpdash-frontend.firebaseio.com",
+    "project_id": "hcpdash-frontend",
+    "storage_bucket": "hcpdash-frontend.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:603056598967:android:fd3ce7a58086b073",
+        "android_client_info": {
+          "package_name": "com.makereadybuilder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "603056598967-th3fe9acb99m63tr5u4vk1pkh8nnf05g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.makereadybuilder",
+            "certificate_hash": "e66f40b2f63d622687e8b787f81e11709b4da084"
+          }
+        },
+        {
+          "client_id": "603056598967-9ahe27v97u6ghgg2edubtemu45q52kio.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdK3rfcT9c1Cph0iqqn0R5s8WjcCTCeSU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "603056598967-natd4rmtjnmndlts4r0uloclnm8f3qk3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
