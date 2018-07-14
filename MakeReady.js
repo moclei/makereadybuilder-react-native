@@ -1,74 +1,125 @@
-import React from 'react';
-import { TouchableHighlight, View, Text, Image} from 'react-native';
+/**
+ * Copyright Marc O Cleirigh 2018
+ *
+ * @format
+ * @flow
+ */
+
+import React, {Component} from 'react';
+import firebase from 'react-native-firebase';
 import {
-    getTheme,
-    MKButton,
-    MKColor,
-    MKIconToggle,
-} from 'react-native-material-kit';
+    FlatList,
+    StyleSheet,
+    ToolbarAndroid,
+    View
+} from 'react-native';
+import MakeReadyListItem from './MakeReadyListItem';
 
-const theme = getTheme();
-const styles = require('./styles');
-
-export default class MakeReady extends React.PureComponent {
-    // toggle a todo as completed or not via update()
-    toggleComplete() {
-        this.props.doc.ref.update({
-            complete: !this.props.complete,
-        });
+type Props = {};
+export default class App extends Component<Props> {
+    static navigationOptions = {
+        title: 'Welcome'
+    };
+    constructor() {
+        super();
+        this.ref = firebase.firestore().collection('makereadies');
+        this.unsubscribe = null;
+        this.state = {
+            textInput: '',
+            loading: true,
+            makereadies: [],
+        };
     }
+
+    componentDidMount() {
+        this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate)
+    }
+    componentWillUnmount() {
+        this.unsubscribe();
+    }
+    onCollectionUpdate = (querySnapshot) => {
+        const makereadies = [];
+        querySnapshot.forEach((doc) => {
+            const { timestamp, email, propertyName, preparerName, unit,
+                scope, contracts,  } = doc.data();
+            makereadies.push({
+                key: doc.id,
+                doc, // DocumentSnapshot
+                timestamp,
+                email,
+                propertyName,
+                preparerName,
+                unit,
+                scope,
+                contracts,
+            });
+        });
+        this.setState({
+            makereadies,
+            loading: false,
+        });
+    };
+
+    renderSeparator = () => {
+        return (
+            <View
+                style={{
+                    height: 1,
+                    width: "86%",
+                    backgroundColor: "#CED0CE",
+                    marginLeft: "14%"
+                }}
+            />
+        );
+    };
 
     render() {
-
-        var base64Icon = 'http://www.getmdl.io/assets/demos/welcome_card.jpg';
-        var action = (<Text> My action</Text>);
-        var menu = (
-            <MKIconToggle
-                checked={true}
-                onCheckedChange={this._onIconChecked}
-                onPress={this._onIconClicked}
-            >
-                <Text pointerEvents="none"
-                      style={styles.toggleTextOff}>Off</Text>
-                <Text state_checked={true}
-                      pointerEvents="none"
-                      style={[styles.toggleText, styles.toggleTextOn]}>On</Text>
-            </MKIconToggle>
-        );
+        if (this.state.loading) {
+            return null; // or render a loading icon
+        }
         return (
-            <TouchableHighlight
-                onPress={() => this.toggleComplete()}>
-            <View style={theme.cardStyle}>
-                <Image source={{uri : base64Icon}} style={theme.cardImageStyle} />
-                <Text style={theme.cardTitleStyle}>Welcome</Text>
-                <Text style={theme.cardContentStyle}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Mauris sagittis pellentesque lacus eleifend lacinia...
-                </Text>
-                <View style={theme.cardMenuStyle}>{menu}</View>
-                <Text style={theme.cardActionStyle}>My Action</Text>
+            <View style={styles.container}>
+                <ToolbarAndroid
+                    style={styles.toolbar}
+                    title={this.props.title}
+                    titleColor={'#FFFFFF'}/>
+                <FlatList
+                    data={this.state.makereadies}
+                    renderItem={this._renderItem}
+                    ItemSeparatorComponent={this.renderSeparator}
+                />
             </View>
-            </TouchableHighlight>
-
-            /*<TouchableHighlight
-                onPress={() => this.toggleComplete()}>
-                <View style={{ flex: 1, height: 48, flexDirection: 'row', alignItems: 'center' }}>
-                    <View style={{ flex: 8 }}>
-                        <Text>Timestamp: {this.props.timestamp}</Text>
-                        <Text>Email: {this.props.email}</Text>
-                        <Text>Property: {this.props.propertyName}</Text>
-                        <Text>Unit: {this.props.unit.unitName}</Text>
-                        <Text>Scope: {this.props.scope.scopeDescription}</Text>
-                        <Text>Contracts: {this.props.contracts.length}</Text>
-                    </View>
-                    <View style={{ flex: 2 }}>
-                        {this.props.complete && (
-                            <Text>COMPLETE</Text>
-                        )}
-                    </View>
-                </View>
-            </TouchableHighlight>*/
-
         );
     }
+    _renderItem = ({item}) => (
+        <MakeReadyListItem
+            item={item}
+            navigation={this.props.navigation}
+            onPressItem={this._onPressItem}
+            ItemSeparatorComponent={this.renderSeparator}
+        />
+    );
+    _onPressItem = (mr) => {
+        console.log('onPressItem: item: ' +  mr );
+        this.props.navigation.navigate('Detail', {mr: mr})
+    };
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#F5FCFF',
+    },
+    welcome: {
+        fontSize: 20,
+        textAlign: 'center',
+        margin: 10,
+    },
+    instructions: {
+        textAlign: 'center',
+        color: '#333333',
+        marginBottom: 5,
+    },
+});
