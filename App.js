@@ -7,56 +7,69 @@
  */
 
 import React from 'react';
-import MakeReady from './MakeReady';
+import MakeReadyList from './MakeReadyList';
 import MakeReadyDetail from "./MakeReadyDetail";
 import {
-    createStackNavigator,
+    createDrawerNavigator,
+    createStackNavigator, createSwitchNavigator,
 } from 'react-navigation';
-import Icon from 'react-native-vector-icons/Ionicons';
+import HomeScreen from "./HomeScreen";
+import SignInScreen from "./SignInScreen";
+import AuthLoadingScreen from "./AuthLoadingScreen";
+import Icon from 'react-native-vector-icons/dist/FontAwesome';
 
-let DrawerStack = createDrawerNavigator({ A });
-let LoginStack = createSwitchNavigator({ B });
+class LogoTitle extends React.Component {
+    render() {
+        return (
+            <View style={styles.toolbar}>
+                <Icon name="bars" size={24} color="#000" />
+                <Text>Make Ready Title</Text>
+            </View>
+        );
+    }
+}
 
-const MakeReadyStack = = createStackNavigator({
-    Home: {
-        screen: MakeReady,
-        navigationOptions: {
-            drawerLabel: 'Home',
-            title: 'Turnovers',
-            drawerIcon: () => (
-                <Icon name={'bars'} size={25} />
-            )
-        },
+const MakeReadyStack = createStackNavigator({
+    MakeReadyList: {
+        screen: MakeReadyList,
 
     },
-    Detail: {
+    MakeReadyDetail: {
         screen: MakeReadyDetail,
-        navigationOptions: {
-            drawerLabel: 'Turnovers: Detail',
-            title: 'Turnovers: Detail',
-            drawerIcon: () => (
-                <Icon name={'md-arrow-back'} size={25} />
-            )
-        },
+
     },
 });
 
-const AppStack = createDrawerNavigator({ Home: HomeScreen, Other: MakeReadyStack });
+const AppStack = createDrawerNavigator(
+    {
+        Home: {
+            screen: HomeScreen,
+        },
+        MakeReadyStack: {
+            screen: MakeReadyStack,
+        },
+    },
+    {
+        //initialRouteName: 'AuthAppLoading',
+        initialRouteName: 'Home',
+    },
+);
 
 const AuthStack = createStackNavigator({ SignIn: SignInScreen });
 
-export default createSwitchNavigator(
+const App = createSwitchNavigator(
     {
         AuthLoading: AuthLoadingScreen,
         App: AppStack,
         Auth: AuthStack,
     },
     {
-        initialRouteName: 'AuthLoading',
-    }
+        //initialRouteName: 'AuthAppLoading',
+        initialRouteName: 'App',
+    },
 );
 
-
+/*
 const App = createStackNavigator({
     Home: {
         screen: MakeReady,
@@ -80,6 +93,6 @@ const App = createStackNavigator({
         },
     },
 });
-
+*/
 export default App;
 

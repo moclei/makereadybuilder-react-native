@@ -14,12 +14,37 @@ import {
     View
 } from 'react-native';
 import MakeReadyListItem from './MakeReadyListItem';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {Button, Text, Toolbar, ToolbarAction, ToolbarContent} from "react-native-paper";
 
 type Props = {};
-export default class App extends Component<Props> {
-    static navigationOptions = {
-        title: 'Welcome'
+
+class LogoTitle extends React.Component {
+    render() {
+        return (
+            <Toolbar style={styles.toolbar}>
+                <ToolbarAction icon="menu" onPress={this._toggleDrawer} />
+                    <ToolbarContent
+                        title="Make Ready List"
+                    />
+            </Toolbar>
+        );
+    }
+    _toggleDrawer = () => {
+        this.props.navigation.toggleDrawer();
     };
+}
+
+export default class App extends Component<Props> {
+    static navigationOptions = ({ navigation }) => {
+        return {
+            title: 'Make Ready List',
+            headerTitle: <LogoTitle navigation={navigation}/>,
+            drawerLabel: 'Make Ready List',
+        };
+    };
+
+
     constructor() {
         super();
         this.ref = firebase.firestore().collection('makereadies');
@@ -79,10 +104,6 @@ export default class App extends Component<Props> {
         }
         return (
             <View style={styles.container}>
-                <ToolbarAndroid
-                    style={styles.toolbar}
-                    title={this.props.title}
-                    titleColor={'#FFFFFF'}/>
                 <FlatList
                     data={this.state.makereadies}
                     renderItem={this._renderItem}
@@ -101,7 +122,10 @@ export default class App extends Component<Props> {
     );
     _onPressItem = (mr) => {
         console.log('onPressItem: item: ' +  mr );
-        this.props.navigation.navigate('Detail', {mr: mr})
+        this.props.navigation.navigate('MakeReadyDetail', {mr: mr})
+    };
+    _toggleDrawer = () => {
+        this.props.navigation.toggleDrawer();
     };
 }
 
@@ -117,9 +141,18 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         margin: 10,
     },
-    instructions: {
-        textAlign: 'center',
-        color: '#333333',
-        marginBottom: 5,
+    toolbar: {
+        flex: 1,
+        backgroundColor: '#FF0266',
     },
+    title: {
+        color: '#FFF',
+        fontSize: 20,
+    },
+    titleButton: {
+        paddingLeft: 0,
+        marginLeft: 0,
+        color: '#FFF',
+        fontSize: 20,
+    }
 });
