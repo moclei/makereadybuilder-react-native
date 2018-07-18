@@ -32,13 +32,16 @@ class LogoTitle extends React.Component {
 const MakeReadyStack = createStackNavigator({
     MakeReadyList: {
         screen: MakeReadyList,
-
     },
     MakeReadyDetail: {
         screen: MakeReadyDetail,
 
     },
 });
+
+MakeReadyStack.navigationOptions = {
+  drawerLabel: 'Make Ready List',
+};
 
 const AppStack = createDrawerNavigator(
     {

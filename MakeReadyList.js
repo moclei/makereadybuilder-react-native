@@ -10,12 +10,10 @@ import firebase from 'react-native-firebase';
 import {
     FlatList,
     StyleSheet,
-    ToolbarAndroid,
     View
 } from 'react-native';
 import MakeReadyListItem from './MakeReadyListItem';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import {Button, Text, Toolbar, ToolbarAction, ToolbarContent} from "react-native-paper";
+import {Toolbar, ToolbarAction, ToolbarContent} from "react-native-paper";
 
 type Props = {};
 
@@ -38,9 +36,8 @@ class LogoTitle extends React.Component {
 export default class App extends Component<Props> {
     static navigationOptions = ({ navigation }) => {
         return {
-            title: 'Make Ready List',
-            headerTitle: <LogoTitle navigation={navigation}/>,
-            drawerLabel: 'Make Ready List',
+          drawerLabel: 'Make Ready List',
+          headerTitle: <LogoTitle navigation={navigation}/>,
         };
     };
 
