@@ -13,8 +13,7 @@ import {
 import firebase from 'react-native-firebase';
 import {BarChart, PieChart, YAxis} from "react-native-svg-charts";
 import * as scale from 'd3-scale';
-import { connect } from 'react-redux';
-import { listMakeReadies } from './reducer';
+
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -50,14 +49,12 @@ export default class HomeScreen extends React.Component {
   }
 
   componentDidMount() {
-    this.unsubscribeRedux = this.props.listMakeReadies();
     this.unsubscribeLightCount = this.ref.where("scope.mrType", "==", "Light").onSnapshot(this.onCollectionUpdateLight);
     this.unsubscribeMedCount = this.ref.where("scope.mrType", "==", "Medium").onSnapshot(this.onCollectionUpdateMedium);
     this.unsubscribeHeavyCount = this.ref.where("scope.mrType", "==", "Heavy").onSnapshot(this.onCollectionUpdateHeavy);
     this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate);
   }
   componentWillUnmount() {
-    this.unsubscribeRedux();
     this.unsubscribeMedCount();
     this.unsubscribeLightCount();
     this.unsubscribeHeavyCount();
