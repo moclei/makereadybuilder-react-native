@@ -10,33 +10,34 @@ import React from 'react';
 import MakeReadyList from './MakeReadyList';
 import MakeReadyDetail from "./MakeReadyDetail";
 import {
-    createDrawerNavigator,
-    createStackNavigator, createSwitchNavigator,
+  createDrawerNavigator,
+  createStackNavigator, createSwitchNavigator,
 } from 'react-navigation';
 import HomeScreen from "./HomeScreen";
 import SignInScreen from "./SignInScreen";
 import AuthLoadingScreen from "./AuthLoadingScreen";
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
+import SignOutScreen from "./SignOutScreen";
 
 class LogoTitle extends React.Component {
-    render() {
-        return (
-            <View style={styles.toolbar}>
-                <Icon name="bars" size={24} color="#000" />
-                <Text>Make Ready Title</Text>
-            </View>
-        );
-    }
+  render() {
+    return (
+      <View style={styles.toolbar}>
+        <Icon name="bars" size={24} color="#000"/>
+        <Text>Make Ready Title</Text>
+      </View>
+    );
+  }
 }
 
 const MakeReadyStack = createStackNavigator({
-    MakeReadyList: {
-        screen: MakeReadyList,
-    },
-    MakeReadyDetail: {
-        screen: MakeReadyDetail,
+  MakeReadyList: {
+    screen: MakeReadyList,
+  },
+  MakeReadyDetail: {
+    screen: MakeReadyDetail,
 
-    },
+  },
 });
 
 MakeReadyStack.navigationOptions = {
@@ -44,32 +45,43 @@ MakeReadyStack.navigationOptions = {
 };
 
 const AppStack = createDrawerNavigator(
-    {
-        Home: {
-            screen: HomeScreen,
-        },
-        MakeReadyStack: {
-            screen: MakeReadyStack,
-        },
+  {
+    Home: {
+      screen: HomeScreen,
     },
-    {
-        //initialRouteName: 'AuthAppLoading',
-        initialRouteName: 'Home',
+    MakeReadyStack: {
+      screen: MakeReadyStack,
     },
+    SignOutScreen: {
+      screen: SignOutScreen,
+      navigationOptions: {
+        drawerLabel: 'Sign Out',
+      },
+    },
+  },
+  {
+    //initialRouteName: 'AuthAppLoading',
+    initialRouteName: 'Home',
+  },
 );
 
-const AuthStack = createStackNavigator({ SignIn: SignInScreen });
+const AuthStack = createStackNavigator(
+  {
+    SignIn: SignInScreen,
+  },
+);
 
 const App = createSwitchNavigator(
-    {
-        AuthLoading: AuthLoadingScreen,
-        App: AppStack,
-        Auth: AuthStack,
-    },
-    {
-        //initialRouteName: 'AuthAppLoading',
-        initialRouteName: 'App',
-    },
+  {
+    AuthLoading: AuthLoadingScreen,
+    App: AppStack,
+    Auth: AuthStack,
+  },
+  {
+    //initialRouteName: 'AuthAppLoading',
+    // initialRouteName: 'App',
+    initialRouteName: 'Auth',
+  },
 );
 
 /*

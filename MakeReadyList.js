@@ -49,22 +49,23 @@ export default class App extends Component<Props> {
         this.state = {
             textInput: '',
             loading: true,
-            makereadies: [],
+            makereadies: []
         };
     }
 
     componentDidMount() {
-        this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate)
+         this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate);
+      // this.unsubscribe = this.ref.orderBy("population", "desc")
     }
     componentWillUnmount() {
         this.unsubscribe();
     }
     onCollectionUpdate = (querySnapshot) => {
-        const makereadies = [];
+        const unsortedMakereadies = [];
         querySnapshot.forEach((doc) => {
             const { timestamp, email, propertyName, preparerName, unit,
                 scope, contracts,  } = doc.data();
-            makereadies.push({
+          unsortedMakereadies.push({
                 key: doc.id,
                 doc, // DocumentSnapshot
                 timestamp,
@@ -76,10 +77,21 @@ export default class App extends Component<Props> {
                 contracts,
             });
         });
-        this.setState({
-            makereadies,
-            loading: false,
-        });
+      const makereadies = [...unsortedMakereadies]
+      makereadies.sort((a, b) => {
+
+        let timeA = new Date(a.timestamp.split(',')[0]);
+        let timeB = new Date(b.timestamp.split(',')[0]);
+        const result = timeA < timeB;
+        //console.log('sort:a : ' + timeA + ', b: ' + timeB + ' result ' + result);
+        return timeA > timeB ? -1 : timeA < timeB ? 1 : 0;
+      });
+
+      // console.log('makereadies sorted: ' + makereadies);
+      this.setState({
+        makereadies: makereadies,
+        loading: false,
+      });
     };
 
     renderSeparator = () => {

@@ -1,17 +1,18 @@
 import React from 'react';
-import {GoogleSignin, GoogleSigninButton} from 'react-native-google-signin';
+import {GoogleSignin} from 'react-native-google-signin';
 import {
   View,
   Text,
   StyleSheet,
   Platform, TouchableOpacity,
 } from 'react-native';
-import {Toolbar, ToolbarContent} from "react-native-paper";
+import {Toolbar, ToolbarBackAction, ToolbarContent} from "react-native-paper";
 
 class LogoTitle extends React.Component {
   render() {
     return (
       <Toolbar style={styles.toolbar}>
+
         <ToolbarContent
           title="Lightning Turnovers"
         />
@@ -21,7 +22,7 @@ class LogoTitle extends React.Component {
 }
 
 
-export default class SignInScreen extends React.PureComponent {
+export default class SignOutScreen extends React.PureComponent {
   static navigationOptions = ({ navigation }) => {
     return {
       headerTitle: <LogoTitle navigation={navigation}/>,
@@ -37,30 +38,28 @@ export default class SignInScreen extends React.PureComponent {
   }
 
   render() {
-    const { user, error } = this.state;
+    const user = this.props.navigation.getParam('user', {});
+    // console.log('User: ' + user.name);
+    // const { user, error } = this.state;
     if (!user) {
+      console.log('SignOutScreen !user');
+      //this._goToSignin();
       return (
         <View style={styles.container}>
-          <GoogleSigninButton
-            style={{ width: 212, height: 48 }}
-            size={GoogleSigninButton.Size.Standard}
-            color={GoogleSigninButton.Color.Auto}
-            onPress={this._signIn}
-          />
-          {error && (
-            <Text>
-              {error.toString()} code: {error.code}
+          <Text>
+              User is not signed in. Redirecting..
             </Text>
-          )}
         </View>
       );
+
+
     } else {
       return (
         <View style={styles.container}>
           <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 20 }}>
             Welcome {user.name}
           </Text>
-          <Text>Your email is: {user.email}</Text>
+          <Text>Your are signed in as: {user.email}</Text>
 
           <TouchableOpacity onPress={this._signOut}>
             <View style={{ marginTop: 50 }}>
@@ -79,14 +78,22 @@ export default class SignInScreen extends React.PureComponent {
    */
 
   async componentDidMount() {
-    await this._configureGoogleSignIn();
-    await this._getCurrentUser().then(() => {
-      //console.log('SignIngScreen componentDidMount: ' + this.state.user);
-      this._goToHome(this.state.user);
-    });
+  }
+
+  async _getCurrentUser() {
+    try {
+      console.log('SignOutScreen getCurrentUser');
+      const user = await GoogleSignin.currentUserAsync();
+      this.setState({ user, error: null });
+    } catch (error) {
+      this.setState({
+        error,
+      });
+    }
   }
 
   async _configureGoogleSignIn() {
+    console.log('SignOutScreen _configureGoogleSignIn');
     await GoogleSignin.hasPlayServices({ autoResolve: true });
     const configPlatform = {
       ...Platform.select({
@@ -105,35 +112,6 @@ export default class SignInScreen extends React.PureComponent {
     });
   }
 
-  async _getCurrentUser() {
-    try {
-      const user = await GoogleSignin.currentUserAsync();
-      this.setState({ user, error: null });
-      console.log('SignIngScreen componentDidMount: ' + this.state.user);
-      // this._goToHome(this.state.user);
-    } catch (error) {
-      this.setState({
-        error,
-      });
-    }
-  }
-
-
-  _signIn = async () => {
-    try {
-      const user = await GoogleSignin.signIn();
-      this.setState({ user, error: null });
-      console.log('This should show once');
-    } catch (error) {
-      if (error.code === 'CANCELED') {
-        error.message = 'user canceled the login flow';
-      }
-      this.setState({
-        error,
-      });
-    }
-  };
-
   _signOut = async () => {
     try {
       await GoogleSignin.revokeAccess();
@@ -147,8 +125,10 @@ export default class SignInScreen extends React.PureComponent {
   };
 
   _goToHome(user) {
-    console.log('SignInScreen user: ' + user);
-    this.props.navigation.navigate('Home', {user: user});
+    // this.props.navigation.navigate('Home', {user: user});
+  }
+  _goToSignin() {
+    // this.props.navigation.navigate('SignIn', {});
   }
 }
 
