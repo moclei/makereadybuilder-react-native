@@ -6,27 +6,32 @@ import {
   StyleSheet,
   Platform, TouchableOpacity,
 } from 'react-native';
-import {Toolbar, ToolbarBackAction, ToolbarContent} from "react-native-paper";
+import {Toolbar, ToolbarAction, ToolbarBackAction, ToolbarContent} from "react-native-paper";
 
 class LogoTitle extends React.Component {
   render() {
     return (
       <Toolbar style={styles.toolbar}>
-
+        <ToolbarAction icon="menu" onPress={this._toggleDrawer}/>
         <ToolbarContent
-          title="Lightning Turnovers"
+          title="Settings"
         />
       </Toolbar>
     );
   }
+  _toggleDrawer = () => {
+    this.props.navigation.toggleDrawer();
+  };
 }
 
 
-export default class SignOutScreen extends React.PureComponent {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      headerTitle: <LogoTitle navigation={navigation}/>,
-    };
+export default class SignOutScreen extends React.Component {
+  static navigationOptions = {
+    drawerLabel: 'Settings',
+    headerStyle: {
+      backgroundColor: '#f4511e',
+    },
+    headerTintColor: '#fff',
   };
 
   constructor(props) {
@@ -39,13 +44,12 @@ export default class SignOutScreen extends React.PureComponent {
 
   render() {
     const user = this.props.navigation.getParam('user', {});
-    // console.log('User: ' + user.name);
-    // const { user, error } = this.state;
     if (!user) {
       console.log('SignOutScreen !user');
       //this._goToSignin();
       return (
-        <View style={styles.container}>
+        <View >
+          <LogoTitle navigation={this.props.navigation} user={user}/>
           <Text>
               User is not signed in. Redirecting..
             </Text>
@@ -55,17 +59,20 @@ export default class SignOutScreen extends React.PureComponent {
 
     } else {
       return (
-        <View style={styles.container}>
-          <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 20 }}>
-            Welcome {user.name}
-          </Text>
-          <Text>Your are signed in as: {user.email}</Text>
+        <View style={styles.outerContainer}>
+          <LogoTitle navigation={this.props.navigation} user={user}/>
+          <View style={styles.innerContainer}>
+            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 20 }}>
+              Welcome {user.name}
+            </Text>
+            <Text>Your are signed in as: {user.email}</Text>
 
-          <TouchableOpacity onPress={this._signOut}>
-            <View style={{ marginTop: 50 }}>
-              <Text>Log out</Text>
-            </View>
-          </TouchableOpacity>
+            <TouchableOpacity onPress={this._signOut}>
+              <View style={{ marginTop: 50 }}>
+                <Text>Log out</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
       );
     }
@@ -133,11 +140,11 @@ export default class SignOutScreen extends React.PureComponent {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  outerContainer: {
+  },
+  innerContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
   },
   welcome: {
     fontSize: 20,
@@ -150,8 +157,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   toolbar: {
-    flex: 1,
     backgroundColor: '#FF0266',
-  },
+  }
 });
 
